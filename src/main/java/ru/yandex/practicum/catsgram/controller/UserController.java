@@ -21,11 +21,6 @@ public class UserController {
         return userService.findAll();
     }
 
-    @GetMapping("/user/{email}")
-    public User findUser(@PathVariable String email) {
-        return userService.findUserByEmail(email);
-    }
-
     @PostMapping("/user")
     public User createUser(@RequestBody User user) {
         return userService.createUser(user);
@@ -34,5 +29,10 @@ public class UserController {
     @PutMapping("/user")
     public User updateUser(@RequestBody User user) {
         return userService.updateUser(user);
+    }
+
+    @GetMapping("/user/{userEmail}")
+    public User getUser(@PathVariable("userEmail") String userEmail) {
+        return userService.findUserByEmail(userEmail);
     }
 }

@@ -15,6 +15,8 @@ public class PostService {
     private final UserService userService;
     private final List<Post> posts = new ArrayList<>();
 
+    private static Integer globalId = 0;
+
     @Autowired
     public PostService(UserService userService) {
         this.userService = userService;

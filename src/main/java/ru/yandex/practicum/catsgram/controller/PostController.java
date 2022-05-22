@@ -21,13 +21,13 @@ public class PostController {
         return postService.findAll();
     }
 
-    @GetMapping("/post/{postId}")
-    public Post findPost(@PathVariable("postId") Integer postId) {
-        return postService.findPostById(postId);
-    }
-
     @PostMapping(value = "/post")
     public Post create(@RequestBody Post post) {
         return postService.create(post);
+    }
+
+    @GetMapping("/post/{postId}")
+    public Post findPost(@PathVariable("postId") Integer postId){
+        return postService.findPostById(postId);
     }
 }
