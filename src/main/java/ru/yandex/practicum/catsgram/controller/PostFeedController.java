@@ -1,11 +1,11 @@
 package ru.yandex.practicum.catsgram.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.Data;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import ru.yandex.practicum.catsgram.exception.IncorrectParameterException;
+import ru.yandex.practicum.catsgram.model.FeedParams;
 import ru.yandex.practicum.catsgram.model.Post;
 import ru.yandex.practicum.catsgram.service.PostService;
 
@@ -13,39 +13,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController()
+@RequestMapping("/feed/friends")
 public class PostFeedController {
     private final PostService postService;
 
-    public PostFeedController(PostService postService){
+    public PostFeedController(PostService postService) {
         this.postService = postService;
     }
 
-    @PostMapping("/feed/friends")
-    List<Post> getFriendsFeed(@RequestBody String params){
-        ObjectMapper objectMapper = new ObjectMapper();
-        FriendsParams friendsParams;
-        try {
-            String paramsFromString = objectMapper.readValue(params, String.class);
-            friendsParams = objectMapper.readValue(paramsFromString, FriendsParams.class);
-        } catch (JsonProcessingException e) {
-            throw new RuntimeException("невалидный формат json", e);
+    @PostMapping
+    List<Post> getFriendsFeed(@RequestBody FeedParams feedParams) {
+        if (!feedParams.getSort().equals("asc") || !feedParams.getSort().equals("desc")) {
+            throw new IncorrectParameterException("sort");
         }
-
-        if(friendsParams != null){
-            List<Post> result = new ArrayList<>();
-            for (String friend : friendsParams.friends) {
-                result.addAll(postService.findAllByUserEmail(friend, friendsParams.size, friendsParams.sort));
-            }
-            return result;
-        } else {
-            throw new RuntimeException("неверно заполнены параметры");
+        if (feedParams.getSize() == null || feedParams.getSize() <= 0) {
+            throw new IncorrectParameterException("size");
         }
-    }
-
-    @Data
-    static class FriendsParams {
-        private String sort;
-        private Integer size;
-        private List<String> friends;
+        if (feedParams.getFriendsEmails().isEmpty()) {
+            throw new IncorrectParameterException("friendsEmails");
+        }
+        List<Post> result = new ArrayList<>();
+        for (String friendEmail : feedParams.getFriendsEmails()) {
+            result.addAll(postService.findAllByUserEmail(friendEmail, feedParams.getSize(), feedParams.getSort()));
+        }
+        return result;
     }
 }
