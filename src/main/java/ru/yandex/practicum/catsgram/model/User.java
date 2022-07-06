@@ -1,11 +1,21 @@
 package ru.yandex.practicum.catsgram.model;
 
-import lombok.Data;
-import java.time.LocalDate;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class User {
-    private String email;
+    private String id;
+    private String username;
     private String nickname;
-    private LocalDate birthdate;
+
+    public User() {
+    }
+
+    public User(String id, String username, String nickname) {
+        this.id = id;
+        this.username = username;
+        this.nickname = nickname;
+    }
 }
