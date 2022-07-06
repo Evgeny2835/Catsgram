@@ -11,11 +11,11 @@ import java.time.LocalDate;
 public class Post {
     private Integer id;
     @Setter(AccessLevel.NONE)
-    private final User author;                // автор
+    private final User author;
     @Setter(AccessLevel.NONE)
-    private final LocalDate creationDate;     // дата создания
-    private String description;               // описание
-    private String photoUrl;                  // url-адрес фотографии
+    private final LocalDate creationDate;
+    private String description;
+    private String photoUrl;
 
     public Post(User author, String description, String photoUrl) {
         this.author = author;

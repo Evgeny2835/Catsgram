@@ -30,10 +30,8 @@ public class FollowDaoImpl implements FollowDao {
     @Override
     public List<Post> getFollowFeed(String userId, int max) {
         // получаем все подписки пользователя
-        // напишите подходящий SQL-запрос
         String sql = "select * from cat_follow where follower_id = ?";
         List<Follow> follows = jdbcTemplate.query(sql, (rs, rowNum) -> makeFollow(rs), userId);
-
         // выгружаем авторов, на которых подписан пользователь
         Set<User> authors = follows.stream()
                 .map(Follow::getAuthor)
@@ -46,8 +44,7 @@ public class FollowDaoImpl implements FollowDao {
             return Collections.emptyList();
         }
 
-        // выгрузите и отсортируйте посты полученных выше авторов
-        // не забудьте предусмотреть ограничение выдачи
+        // выгружаем и сортируем посты полученных выше авторов
         return authors.stream()
                 .map(postDao::findPostsByUser)
                 .flatMap(Collection::stream)
@@ -59,7 +56,7 @@ public class FollowDaoImpl implements FollowDao {
     }
 
     private Follow makeFollow(ResultSet rs) throws SQLException {
-        // реализуйте маппинг результата запроса в объект класса Follow
+        // реализация маппинга результата запроса в объект класса Follow
         String author = rs.getString("author_id");
         String follower = rs.getString("follower_id");
         return new Follow(author, follower);
